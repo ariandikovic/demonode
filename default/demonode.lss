@@ -1,0 +1,835 @@
+
+demonode.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000424  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .bss          00000010  00800060  00800060  00000498  2**0
+                  ALLOC
+  2 .debug_aranges 00000020  00000000  00000000  00000498  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  3 .debug_pubnames 0000007a  00000000  00000000  000004b8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_info   000003bd  00000000  00000000  00000532  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_abbrev 000001e7  00000000  00000000  000008ef  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_line   0000061e  00000000  00000000  00000ad6  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_frame  00000070  00000000  00000000  000010f4  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_str    00000118  00000000  00000000  00001164  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_loc    000001fc  00000000  00000000  0000127c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_ranges 00000048  00000000  00000000  00001478  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 93 00 	jmp	0x126	; 0x126 <__vector_1>
+   8:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+   c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  10:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  14:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  18:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  1c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  20:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  24:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  28:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  2c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  30:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  34:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  38:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  3c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  40:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  44:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  48:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  4c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  50:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d4 e0       	ldi	r29, 0x04	; 4
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+
+00000060 <__do_clear_bss>:
+  60:	10 e0       	ldi	r17, 0x00	; 0
+  62:	a0 e6       	ldi	r26, 0x60	; 96
+  64:	b0 e0       	ldi	r27, 0x00	; 0
+  66:	01 c0       	rjmp	.+2      	; 0x6a <.do_clear_bss_start>
+
+00000068 <.do_clear_bss_loop>:
+  68:	1d 92       	st	X+, r1
+
+0000006a <.do_clear_bss_start>:
+  6a:	a0 37       	cpi	r26, 0x70	; 112
+  6c:	b1 07       	cpc	r27, r17
+  6e:	e1 f7       	brne	.-8      	; 0x68 <.do_clear_bss_loop>
+  70:	0e 94 c2 00 	call	0x184	; 0x184 <main>
+  74:	0c 94 10 02 	jmp	0x420	; 0x420 <_exit>
+
+00000078 <__bad_interrupt>:
+  78:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000007c <spiWrite>:
+GICR = 0b01000000;	//enable INT0
+}
+
+void spiWrite (unsigned char addr,unsigned char data) //upisuje data na adresu addr na SPI
+{
+PORTB = PORTB & (~(1<< PB4));	//SS ide low, ostale bitove ne diramo
+  7c:	c4 98       	cbi	0x18, 4	; 24
+SPDR= (addr | (1<<7));			//SPI adresa na koju ide write + MSB=1 za write
+  7e:	80 68       	ori	r24, 0x80	; 128
+  80:	8f b9       	out	0x0f, r24	; 15
+while (!(SPSR & (1<<SPIF)));	//cekamo da se postavi bit SPIF, znaci otisao byte na SPI
+  82:	77 9b       	sbis	0x0e, 7	; 14
+  84:	fe cf       	rjmp	.-4      	; 0x82 <spiWrite+0x6>
+SPDR=data;						//u SPDR stavljamo podatak
+  86:	6f b9       	out	0x0f, r22	; 15
+while (!(SPSR & (1<<SPIF)));	//cekamo da se postavi bit SPIF, znaci otisao byte na SPI
+  88:	77 9b       	sbis	0x0e, 7	; 14
+  8a:	fe cf       	rjmp	.-4      	; 0x88 <spiWrite+0xc>
+PORTB = PORTB | (1<< PB4);		//postavi SS high
+  8c:	c4 9a       	sbi	0x18, 4	; 24
+return;
+}
+  8e:	08 95       	ret
+
+00000090 <spiRead>:
+
+unsigned char spiRead (unsigned char addr)
+{
+PORTB = PORTB & (~(1<< PB4));	//SS ide low, ostale bitove ne diramo
+  90:	c4 98       	cbi	0x18, 4	; 24
+SPDR= (addr & 0b01111111);		//SPI adresa od koje ide read + MSB=0 za read
+  92:	8f 77       	andi	r24, 0x7F	; 127
+  94:	8f b9       	out	0x0f, r24	; 15
+while (!(SPSR & (1<<SPIF)));	//cekamo da se postavi bit SPIF, znaci otisao byte na SPI
+  96:	77 9b       	sbis	0x0e, 7	; 14
+  98:	fe cf       	rjmp	.-4      	; 0x96 <spiRead+0x6>
+SPDR=0;							//neki podatak u SPDR, RFM22 ne gleda ovo uopce
+  9a:	1f b8       	out	0x0f, r1	; 15
+while (!(SPSR & (1<<SPIF)));	//cekamo da se napuni SPDR sa podacima od RFM modula
+  9c:	77 9b       	sbis	0x0e, 7	; 14
+  9e:	fe cf       	rjmp	.-4      	; 0x9c <spiRead+0xc>
+PORTB = PORTB | (1<< PB4);		//postavi SS high
+  a0:	c4 9a       	sbi	0x18, 4	; 24
+return SPDR;					//vrati podatak ocitan sa adrese addr preko funkcije
+  a2:	8f b1       	in	r24, 0x0f	; 15
+}
+  a4:	08 95       	ret
+
+000000a6 <spiWriteBurst>:
+
+void spiWriteBurst (char addr,unsigned char *buf,unsigned char broj) //pise SPI sabirnicu u BURST modu
+{	//prima pocetnu adresu i pointer na polje za podatke, te koliko bajtova pise
+unsigned char i;				//za petlju nam treba
+PORTB = PORTB & (~(1<< PB4));	//SS ide low, ostale bitove ne diramo
+  a6:	c4 98       	cbi	0x18, 4	; 24
+SPDR= (addr | (1<<7));			//SPI adresa na koju ide write + MSB=1 za write
+  a8:	80 68       	ori	r24, 0x80	; 128
+  aa:	8f b9       	out	0x0f, r24	; 15
+while (!(SPSR & (1<<SPIF)));	//cekamo da se postavi bit SPIF, znaci otisao byte na SPI
+  ac:	77 9b       	sbis	0x0e, 7	; 14
+  ae:	fe cf       	rjmp	.-4      	; 0xac <spiWriteBurst+0x6>
+  b0:	fb 01       	movw	r30, r22
+  b2:	90 e0       	ldi	r25, 0x00	; 0
+  b4:	06 c0       	rjmp	.+12     	; 0xc2 <spiWriteBurst+0x1c>
+for(i=0 ; i<broj; i++){ 		//vrti petlju da zapise _broj_ bajtova pocevsi od adrese addr
+SPDR=buf[i]; 					//pisemo podatak iz scratcha u SPDR
+  b6:	80 81       	ld	r24, Z
+  b8:	8f b9       	out	0x0f, r24	; 15
+while (!(SPSR & (1<<SPIF)));	//cekamo da ode podatak na SPI sabirnicu
+  ba:	77 9b       	sbis	0x0e, 7	; 14
+  bc:	fe cf       	rjmp	.-4      	; 0xba <spiWriteBurst+0x14>
+{	//prima pocetnu adresu i pointer na polje za podatke, te koliko bajtova pise
+unsigned char i;				//za petlju nam treba
+PORTB = PORTB & (~(1<< PB4));	//SS ide low, ostale bitove ne diramo
+SPDR= (addr | (1<<7));			//SPI adresa na koju ide write + MSB=1 za write
+while (!(SPSR & (1<<SPIF)));	//cekamo da se postavi bit SPIF, znaci otisao byte na SPI
+for(i=0 ; i<broj; i++){ 		//vrti petlju da zapise _broj_ bajtova pocevsi od adrese addr
+  be:	9f 5f       	subi	r25, 0xFF	; 255
+  c0:	31 96       	adiw	r30, 0x01	; 1
+  c2:	94 17       	cp	r25, r20
+  c4:	c0 f3       	brcs	.-16     	; 0xb6 <spiWriteBurst+0x10>
+SPDR=buf[i]; 					//pisemo podatak iz scratcha u SPDR
+while (!(SPSR & (1<<SPIF)));	//cekamo da ode podatak na SPI sabirnicu
+}
+PORTB = PORTB | (1<< PB4);		//postavi SS high
+  c6:	c4 9a       	sbi	0x18, 4	; 24
+return;
+}
+  c8:	08 95       	ret
+
+000000ca <getDIPvalue>:
+
+unsigned char getDIPvalue (void)
+{
+//sad kad sam ga zalemio tako kako jesam, moram okretati bitove :)
+unsigned char a,value = 0;
+a=PINC;		//ocitaj PORTC
+  ca:	63 b3       	in	r22, 0x13	; 19
+a=a & 0b10000000;//ostavi najtezi bit
+a=a>>7;//pomak na najnizi bit
+value=value | a; //zalijepi to u value
+
+a=PINC;		//ocitaj PORTC
+  cc:	73 b3       	in	r23, 0x13	; 19
+a=a & 0b01000000;//ostavi slijedeci bit
+  ce:	70 74       	andi	r23, 0x40	; 64
+a=a>>5;//pomak na njegovo mjesto
+value=value | a; //zalijepi to u value
+
+a=PINC;		//ocitaj PORTC
+  d0:	83 b3       	in	r24, 0x13	; 19
+a=a & 0b00100000;//ostavi slijedeci bit
+  d2:	80 72       	andi	r24, 0x20	; 32
+a=a>>3;//pomak na njegovo mjesto
+value=value | a; //zalijepi to u value
+
+a=PINC;		//ocitaj PORTC
+  d4:	93 b3       	in	r25, 0x13	; 19
+a=a & 0b00010000;//ostavi slijedeci bit
+  d6:	90 71       	andi	r25, 0x10	; 16
+a=a>>1;//pomak na njegovo mjesto
+value=value | a; //zalijepi to u value
+
+a=PINC;		//ocitaj PORTC
+  d8:	23 b3       	in	r18, 0x13	; 19
+a=a & 0b00001000;//ostavi slijedeci bit
+  da:	28 70       	andi	r18, 0x08	; 8
+a=a<<1;//pomak na njegovo mjesto
+value=value | a; //zalijepi to u value
+
+a=PINC;		//ocitaj PORTC
+  dc:	33 b3       	in	r19, 0x13	; 19
+a=a & 0b00000100;//ostavi slijedeci bit
+  de:	34 70       	andi	r19, 0x04	; 4
+a=a<<3;//pomak na njegovo mjesto
+value=value | a; //zalijepi to u value
+
+a=PINC;		//ocitaj PORTC
+  e0:	43 b3       	in	r20, 0x13	; 19
+a=a & 0b00000010;//ostavi slijedeci bit
+  e2:	42 70       	andi	r20, 0x02	; 2
+a=a<<5;//pomak na njegovo mjesto
+value=value | a; //zalijepi to u value
+
+a=PINC;		//ocitaj PORTC
+  e4:	53 b3       	in	r21, 0x13	; 19
+value=value | a; //zalijepi to u value
+
+a=PINC;		//ocitaj PORTC
+a=a & 0b01000000;//ostavi slijedeci bit
+a=a>>5;//pomak na njegovo mjesto
+value=value | a; //zalijepi to u value
+  e6:	72 95       	swap	r23
+  e8:	76 95       	lsr	r23
+  ea:	77 70       	andi	r23, 0x07	; 7
+  ec:	66 1f       	adc	r22, r22
+  ee:	66 27       	eor	r22, r22
+  f0:	66 1f       	adc	r22, r22
+  f2:	76 2b       	or	r23, r22
+
+a=PINC;		//ocitaj PORTC
+a=a & 0b00100000;//ostavi slijedeci bit
+a=a>>3;//pomak na njegovo mjesto
+value=value | a; //zalijepi to u value
+  f4:	86 95       	lsr	r24
+  f6:	86 95       	lsr	r24
+  f8:	86 95       	lsr	r24
+  fa:	78 2b       	or	r23, r24
+
+a=PINC;		//ocitaj PORTC
+a=a & 0b00010000;//ostavi slijedeci bit
+a=a>>1;//pomak na njegovo mjesto
+value=value | a; //zalijepi to u value
+  fc:	96 95       	lsr	r25
+  fe:	79 2b       	or	r23, r25
+
+a=PINC;		//ocitaj PORTC
+a=a & 0b00001000;//ostavi slijedeci bit
+a=a<<1;//pomak na njegovo mjesto
+value=value | a; //zalijepi to u value
+ 100:	22 0f       	add	r18, r18
+ 102:	72 2b       	or	r23, r18
+
+a=PINC;		//ocitaj PORTC
+a=a & 0b00000100;//ostavi slijedeci bit
+a=a<<3;//pomak na njegovo mjesto
+value=value | a; //zalijepi to u value
+ 104:	33 0f       	add	r19, r19
+ 106:	33 0f       	add	r19, r19
+ 108:	33 0f       	add	r19, r19
+ 10a:	73 2b       	or	r23, r19
+
+a=PINC;		//ocitaj PORTC
+a=a & 0b00000010;//ostavi slijedeci bit
+a=a<<5;//pomak na njegovo mjesto
+value=value | a; //zalijepi to u value
+ 10c:	42 95       	swap	r20
+ 10e:	44 0f       	add	r20, r20
+ 110:	40 7e       	andi	r20, 0xE0	; 224
+ 112:	74 2b       	or	r23, r20
+
+a=PINC;		//ocitaj PORTC
+a=a & 0b0000001;//ostavi slijedeci bit
+a=a<<7;//pomak na njegovo mjesto
+value=value | a; //zalijepi to u value
+ 114:	57 95       	ror	r21
+ 116:	55 27       	eor	r21, r21
+ 118:	57 95       	ror	r21
+ 11a:	75 2b       	or	r23, r21
+
+value = value ^ 0xFF; //moramo nule prebacit u jedinice -> kad je switch ON pin se ocita kao 0!!!
+ 11c:	70 95       	com	r23
+
+if (value==0) value++;// ako nijedan switch nije ukljucen deafult je 1 sekunda
+ 11e:	09 f4       	brne	.+2      	; 0x122 <getDIPvalue+0x58>
+ 120:	71 e0       	ldi	r23, 0x01	; 1
+return value;
+}
+ 122:	87 2f       	mov	r24, r23
+ 124:	08 95       	ret
+
+00000126 <__vector_1>:
+
+volatile unsigned char flag;
+
+ISR(INT0_vect) 
+{ 
+ 126:	1f 92       	push	r1
+ 128:	0f 92       	push	r0
+ 12a:	0f b6       	in	r0, 0x3f	; 63
+ 12c:	0f 92       	push	r0
+ 12e:	11 24       	eor	r1, r1
+ 130:	2f 93       	push	r18
+ 132:	3f 93       	push	r19
+ 134:	4f 93       	push	r20
+ 136:	5f 93       	push	r21
+ 138:	6f 93       	push	r22
+ 13a:	7f 93       	push	r23
+ 13c:	8f 93       	push	r24
+ 13e:	9f 93       	push	r25
+ 140:	af 93       	push	r26
+ 142:	bf 93       	push	r27
+ 144:	ef 93       	push	r30
+ 146:	ff 93       	push	r31
+spiWrite (0x07,0x41);//enable READY mode and battery readout
+ 148:	87 e0       	ldi	r24, 0x07	; 7
+ 14a:	61 e4       	ldi	r22, 0x41	; 65
+ 14c:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiRead (0x03);//citamo interrupt/status registar 1
+ 150:	83 e0       	ldi	r24, 0x03	; 3
+ 152:	0e 94 48 00 	call	0x90	; 0x90 <spiRead>
+spiRead (0x04);//citamo interrupt/status registar 2
+ 156:	84 e0       	ldi	r24, 0x04	; 4
+ 158:	0e 94 48 00 	call	0x90	; 0x90 <spiRead>
+flag=1;
+ 15c:	81 e0       	ldi	r24, 0x01	; 1
+ 15e:	80 93 6f 00 	sts	0x006F, r24
+}
+ 162:	ff 91       	pop	r31
+ 164:	ef 91       	pop	r30
+ 166:	bf 91       	pop	r27
+ 168:	af 91       	pop	r26
+ 16a:	9f 91       	pop	r25
+ 16c:	8f 91       	pop	r24
+ 16e:	7f 91       	pop	r23
+ 170:	6f 91       	pop	r22
+ 172:	5f 91       	pop	r21
+ 174:	4f 91       	pop	r20
+ 176:	3f 91       	pop	r19
+ 178:	2f 91       	pop	r18
+ 17a:	0f 90       	pop	r0
+ 17c:	0f be       	out	0x3f, r0	; 63
+ 17e:	0f 90       	pop	r0
+ 180:	1f 90       	pop	r1
+ 182:	18 95       	reti
+
+00000184 <main>:
+
+
+int main (void)
+{
+ 184:	0f 93       	push	r16
+ 186:	1f 93       	push	r17
+ 188:	cf 93       	push	r28
+ 18a:	df 93       	push	r29
+SPSR = 1; //SPI double speed ,SPI2X=1 pa je FSPI=FOSC/2
+}
+
+static inline void atmegainit (void) //podesavanje hardvera mikrokontrolera
+{
+DDRB = 0b10110110;//SS (PB4), MOSI(PB5), SCK(PB7) outputi, MISO(PB6) input->treba za SPI
+ 18c:	86 eb       	ldi	r24, 0xB6	; 182
+ 18e:	87 bb       	out	0x17, r24	; 23
+//pinovi PB0,PB3 inputi, na PB0 je tipkalo T1
+PORTB = PORTB | (1<< PB0);	//pull up na PB0 aktiviraj
+ 190:	c0 9a       	sbi	0x18, 0	; 24
+PORTB = PORTB | (1<< PB1);				//postavi PB1 high, LED crvena off
+ 192:	c1 9a       	sbi	0x18, 1	; 24
+PORTB = PORTB | (1<< PB2);				//postavi PB2 high, LED zelena off
+ 194:	c2 9a       	sbi	0x18, 2	; 24
+
+DDRD = 0x00;	//svi pinovi inputi, trebat ce nam vanjski interapt INT0 na koji je spojen nIRQ
+ 196:	11 ba       	out	0x11, r1	; 17
+PORTD = 0X00;	//switch pull-up OFF
+ 198:	12 ba       	out	0x12, r1	; 18
+
+DDRC = 0x00;	//svi pinovi inputi port C
+ 19a:	14 ba       	out	0x14, r1	; 20
+PORTC = 0XFF;  //svi pull-up  aktivni na portu C
+ 19c:	8f ef       	ldi	r24, 0xFF	; 255
+ 19e:	85 bb       	out	0x15, r24	; 21
+
+DDRA=0x00;		//svi pinovi inputi port A
+ 1a0:	1a ba       	out	0x1a, r1	; 26
+PORTA = 0XFF;  //svi pull-up aktivni na portu A
+ 1a2:	8b bb       	out	0x1b, r24	; 27
+
+MCUCR = 0x00;	//low na INT0 generira interapt
+ 1a4:	15 be       	out	0x35, r1	; 53
+GICR = 0b01000000;	//enable INT0
+ 1a6:	80 e4       	ldi	r24, 0x40	; 64
+ 1a8:	8b bf       	out	0x3b, r24	; 59
+
+unsigned char scratch [15];	//scratchpad!
+
+static inline void spiInit (void) //inicijalizacija hardverskog SPI modula mikrokontrolera
+{
+PORTB = PORTB | (1<< PB4);//postavi SS high, ostale ne diraj
+ 1aa:	c4 9a       	sbi	0x18, 4	; 24
+SPCR = 0b01010000; //disable interrupt,enable SPI,output MSB first,mode 0,clock ovisi o SPSR 
+ 1ac:	80 e5       	ldi	r24, 0x50	; 80
+ 1ae:	8d b9       	out	0x0d, r24	; 13
+SPSR = 1; //SPI double speed ,SPI2X=1 pa je FSPI=FOSC/2
+ 1b0:	81 e0       	ldi	r24, 0x01	; 1
+ 1b2:	8e b9       	out	0x0e, r24	; 14
+ 1b4:	8c ed       	ldi	r24, 0xDC	; 220
+ 1b6:	95 e0       	ldi	r25, 0x05	; 5
+    milliseconds can be achieved.
+ */
+void
+_delay_loop_2(uint16_t __count)
+{
+	__asm__ volatile (
+ 1b8:	28 eb       	ldi	r18, 0xB8	; 184
+ 1ba:	30 e0       	ldi	r19, 0x00	; 0
+ 1bc:	f9 01       	movw	r30, r18
+ 1be:	31 97       	sbiw	r30, 0x01	; 1
+ 1c0:	f1 f7       	brne	.-4      	; 0x1be <main+0x3a>
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+ 1c2:	01 97       	sbiw	r24, 0x01	; 1
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+ 1c4:	d9 f7       	brne	.-10     	; 0x1bc <main+0x38>
+}
+
+static inline void RFM22init (void) //inicijalizacija registara RFM22 modula
+{
+_delay_ms(150);			//pricekajmo 150 ms, inicijalizacija RFM
+spiWrite(0x07, 0x80);	//software reset RFM modula
+ 1c6:	87 e0       	ldi	r24, 0x07	; 7
+ 1c8:	60 e8       	ldi	r22, 0x80	; 128
+ 1ca:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+ 1ce:	8c ed       	ldi	r24, 0xDC	; 220
+ 1d0:	95 e0       	ldi	r25, 0x05	; 5
+ 1d2:	28 eb       	ldi	r18, 0xB8	; 184
+ 1d4:	30 e0       	ldi	r19, 0x00	; 0
+ 1d6:	f9 01       	movw	r30, r18
+ 1d8:	31 97       	sbiw	r30, 0x01	; 1
+ 1da:	f1 f7       	brne	.-4      	; 0x1d8 <main+0x54>
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+ 1dc:	01 97       	sbiw	r24, 0x01	; 1
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+ 1de:	d9 f7       	brne	.-10     	; 0x1d6 <main+0x52>
+_delay_ms(150);			//pricekajmo jos 150 ms, da budemo sigurni
+
+spiWrite(0x05, 0x00);	//disable all interrupts
+ 1e0:	85 e0       	ldi	r24, 0x05	; 5
+ 1e2:	60 e0       	ldi	r22, 0x00	; 0
+ 1e4:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x06, 0x00);	//disable all interrupts
+ 1e8:	86 e0       	ldi	r24, 0x06	; 6
+ 1ea:	60 e0       	ldi	r22, 0x00	; 0
+ 1ec:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+spiRead (0x03);//citamo interrupt status 1 registar, za interrupt flag maknut ako postoji
+ 1f0:	83 e0       	ldi	r24, 0x03	; 3
+ 1f2:	0e 94 48 00 	call	0x90	; 0x90 <spiRead>
+spiRead (0x04);//citamo interrupt status 2 registar, za interrupt flag maknut ako postoji
+ 1f6:	84 e0       	ldi	r24, 0x04	; 4
+ 1f8:	0e 94 48 00 	call	0x90	; 0x90 <spiRead>
+
+spiWrite(0x07, 0x01);	//to READY mode
+ 1fc:	87 e0       	ldi	r24, 0x07	; 7
+ 1fe:	61 e0       	ldi	r22, 0x01	; 1
+ 200:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+//Si4432 V2 silicon specific -> silicon labs AN415 (rev 0.6) str. 24
+spiWrite(0x5A, 0x7F); //write 0x7F to the VCO Current Trimming register
+ 204:	8a e5       	ldi	r24, 0x5A	; 90
+ 206:	6f e7       	ldi	r22, 0x7F	; 127
+ 208:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x58, 0x80); //write 0xD7 to the ChargepumpCurrentTrimmingOverride register
+ 20c:	88 e5       	ldi	r24, 0x58	; 88
+ 20e:	60 e8       	ldi	r22, 0x80	; 128
+ 210:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x59, 0x40); //write 0x40 to the Divider Current Trimming register
+ 214:	89 e5       	ldi	r24, 0x59	; 89
+ 216:	60 e4       	ldi	r22, 0x40	; 64
+ 218:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+//best receiver performances setup
+spiWrite(0x6A, 0x0B); //write 0x0B to the AGC Override 2 register,RSSI readout correction
+ 21c:	8a e6       	ldi	r24, 0x6A	; 106
+ 21e:	6b e0       	ldi	r22, 0x0B	; 11
+ 220:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x68, 0x04); //write 0x04 to the Deltasigma ADC Tuning 2 register
+ 224:	88 e6       	ldi	r24, 0x68	; 104
+ 226:	64 e0       	ldi	r22, 0x04	; 4
+ 228:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x1F, 0x03); //write 0x03 to the Clock Recovery Gearshift Override register
+ 22c:	8f e1       	ldi	r24, 0x1F	; 31
+ 22e:	63 e0       	ldi	r22, 0x03	; 3
+ 230:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+spiWrite(0x09, 0x75);////XTAL korekcija kapaciteta za NODE modul
+ 234:	89 e0       	ldi	r24, 0x09	; 9
+ 236:	65 e7       	ldi	r22, 0x75	; 117
+ 238:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x0A, 0x00);//GPIO clock izlaz 30 Mhz, no clock tail, no Low freq clock
+ 23c:	8a e0       	ldi	r24, 0x0A	; 10
+ 23e:	60 e0       	ldi	r22, 0x00	; 0
+ 240:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x0B, 0xD2);//GPIO 0 - strong drive (HH), no pullup, TX state
+ 244:	8b e0       	ldi	r24, 0x0B	; 11
+ 246:	62 ed       	ldi	r22, 0xD2	; 210
+ 248:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x0C, 0xD5);//GPIO 1 - strong drive (HH), no pullup, RX state
+ 24c:	8c e0       	ldi	r24, 0x0C	; 12
+ 24e:	65 ed       	ldi	r22, 0xD5	; 213
+ 250:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x0D, 0x00);//GPIO 2 - strong drive (HH), no pullup, CLK output
+ 254:	8d e0       	ldi	r24, 0x0D	; 13
+ 256:	60 e0       	ldi	r22, 0x00	; 0
+ 258:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+spiWrite(0x0F, 0x70);//ADC input ->GND
+ 25c:	8f e0       	ldi	r24, 0x0F	; 15
+ 25e:	60 e7       	ldi	r22, 0x70	; 112
+ 260:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x10, 0x00);//ADC offset ->0
+ 264:	80 e1       	ldi	r24, 0x10	; 16
+ 266:	60 e0       	ldi	r22, 0x00	; 0
+ 268:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x12, 0x00);//temp. sensor calibration off
+ 26c:	82 e1       	ldi	r24, 0x12	; 18
+ 26e:	60 e0       	ldi	r22, 0x00	; 0
+ 270:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x13, 0x00);//temp. sensor offset ->0
+ 274:	83 e1       	ldi	r24, 0x13	; 19
+ 276:	60 e0       	ldi	r22, 0x00	; 0
+ 278:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+spiWrite(0x1C, 0x04);//IF filter bandwith -> RFM datasheet str. 44
+ 27c:	8c e1       	ldi	r24, 0x1C	; 28
+ 27e:	64 e0       	ldi	r22, 0x04	; 4
+ 280:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x1D, 0x40);//AFC enable
+ 284:	8d e1       	ldi	r24, 0x1D	; 29
+ 286:	60 e4       	ldi	r22, 0x40	; 64
+ 288:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x1E, 0x05);//AFC timing -> ?
+ 28c:	8e e1       	ldi	r24, 0x1E	; 30
+ 28e:	65 e0       	ldi	r22, 0x05	; 5
+ 290:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+spiWrite(0x20, 0xC8);//clock recovery oversampling
+ 294:	80 e2       	ldi	r24, 0x20	; 32
+ 296:	68 ec       	ldi	r22, 0xC8	; 200
+ 298:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x21, 0x00);//clock recovery offset 2
+ 29c:	81 e2       	ldi	r24, 0x21	; 33
+ 29e:	60 e0       	ldi	r22, 0x00	; 0
+ 2a0:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x22, 0xA3);//clock recovery offset 1
+ 2a4:	82 e2       	ldi	r24, 0x22	; 34
+ 2a6:	63 ea       	ldi	r22, 0xA3	; 163
+ 2a8:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x23, 0xD7);//clock recovery offset 0
+ 2ac:	83 e2       	ldi	r24, 0x23	; 35
+ 2ae:	67 ed       	ldi	r22, 0xD7	; 215
+ 2b0:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x24, 0x00);//clock recovery timing loop 1
+ 2b4:	84 e2       	ldi	r24, 0x24	; 36
+ 2b6:	60 e0       	ldi	r22, 0x00	; 0
+ 2b8:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x25, 0xA6);//clock recovery timing loop 0
+ 2bc:	85 e2       	ldi	r24, 0x25	; 37
+ 2be:	66 ea       	ldi	r22, 0xA6	; 166
+ 2c0:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+spiWrite(0x30, 0x8E);//CRC-16 on,TX packet handling on,CRC over entire packet,RX packet handling on
+ 2c4:	80 e3       	ldi	r24, 0x30	; 48
+ 2c6:	6e e8       	ldi	r22, 0x8E	; 142
+ 2c8:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x32, 0x00);//no header check
+ 2cc:	82 e3       	ldi	r24, 0x32	; 50
+ 2ce:	60 e0       	ldi	r22, 0x00	; 0
+ 2d0:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x33, 0x02);//NO header, sync word 3 and 2 ON -> 2D, D4, variable packet lenght on
+ 2d4:	83 e3       	ldi	r24, 0x33	; 51
+ 2d6:	62 e0       	ldi	r22, 0x02	; 2
+ 2d8:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x34, 0x10);//preamble 16 nibbles ->64 bits
+ 2dc:	84 e3       	ldi	r24, 0x34	; 52
+ 2de:	60 e1       	ldi	r22, 0x10	; 16
+ 2e0:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x35, 0x30);//preamble detection 4 nibbles -> 24 bits
+ 2e4:	85 e3       	ldi	r24, 0x35	; 53
+ 2e6:	60 e3       	ldi	r22, 0x30	; 48
+ 2e8:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x36, 0x2D);//sync word 3
+ 2ec:	86 e3       	ldi	r24, 0x36	; 54
+ 2ee:	6d e2       	ldi	r22, 0x2D	; 45
+ 2f0:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x37, 0xD4);//sync word 2
+ 2f4:	87 e3       	ldi	r24, 0x37	; 55
+ 2f6:	64 ed       	ldi	r22, 0xD4	; 212
+ 2f8:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x69, 0x20);//AGC enable
+ 2fc:	89 e6       	ldi	r24, 0x69	; 105
+ 2fe:	60 e2       	ldi	r22, 0x20	; 32
+ 300:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+//-----------------------------------------------------
+spiWrite(0x3E, 0x05);//packet lenght 5 bytes (payload)
+ 304:	8e e3       	ldi	r24, 0x3E	; 62
+ 306:	65 e0       	ldi	r22, 0x05	; 5
+ 308:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x6D, 0x00);//output power 8 dBm
+ 30c:	8d e6       	ldi	r24, 0x6D	; 109
+ 30e:	60 e0       	ldi	r22, 0x00	; 0
+ 310:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+spiWrite(0x70, 0x21);//whitening ON, DATA RATE ispod 30 kbps!!!- > bit 5 SET!!!!!
+ 314:	80 e7       	ldi	r24, 0x70	; 112
+ 316:	61 e2       	ldi	r22, 0x21	; 33
+ 318:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x71, 0x23);//GFSK, FIFO mode
+ 31c:	81 e7       	ldi	r24, 0x71	; 113
+ 31e:	63 e2       	ldi	r22, 0x23	; 35
+ 320:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+spiWrite(0x72, 0x40);//devijacija frekvencije 40 khz
+ 324:	82 e7       	ldi	r24, 0x72	; 114
+ 326:	60 e4       	ldi	r22, 0x40	; 64
+ 328:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+spiWrite(0x6E, 0xA3);//TX data rate  1-> 20 kbps
+ 32c:	8e e6       	ldi	r24, 0x6E	; 110
+ 32e:	63 ea       	ldi	r22, 0xA3	; 163
+ 330:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x6F, 0xD7);//TX data rate  0-> 20 kbps
+ 334:	8f e6       	ldi	r24, 0x6F	; 111
+ 336:	67 ed       	ldi	r22, 0xD7	; 215
+ 338:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+spiWrite(0x73, 0x00);//no frequency offset
+ 33c:	83 e7       	ldi	r24, 0x73	; 115
+ 33e:	60 e0       	ldi	r22, 0x00	; 0
+ 340:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x74, 0x00);//no frequency offset
+ 344:	84 e7       	ldi	r24, 0x74	; 116
+ 346:	60 e0       	ldi	r22, 0x00	; 0
+ 348:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x79, 0x00);//no frequency hopping
+ 34c:	89 e7       	ldi	r24, 0x79	; 121
+ 34e:	60 e0       	ldi	r22, 0x00	; 0
+ 350:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite(0x7A, 0x00);//no frequency hopping
+ 354:	8a e7       	ldi	r24, 0x7A	; 122
+ 356:	60 e0       	ldi	r22, 0x00	; 0
+ 358:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+spiWrite (0x75,0x53);//freq. band select 430-440 MHz
+ 35c:	85 e7       	ldi	r24, 0x75	; 117
+ 35e:	63 e5       	ldi	r22, 0x53	; 83
+ 360:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+spiWrite (0x76,0x62);//carrier 433.92 MHz
+ 364:	86 e7       	ldi	r24, 0x76	; 118
+ 366:	62 e6       	ldi	r22, 0x62	; 98
+ 368:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite (0x77,0x00);//carrier 433.92 MHz
+ 36c:	87 e7       	ldi	r24, 0x77	; 119
+ 36e:	60 e0       	ldi	r22, 0x00	; 0
+ 370:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+spiWrite(0x05, 0x04);//interrupt enable 1 register-packet sent
+ 374:	85 e0       	ldi	r24, 0x05	; 5
+ 376:	64 e0       	ldi	r22, 0x04	; 4
+ 378:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+spiWrite (0x08,0x01);//clear TX FIFO
+ 37c:	88 e0       	ldi	r24, 0x08	; 8
+ 37e:	61 e0       	ldi	r22, 0x01	; 1
+ 380:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+spiWrite (0x08,0x00);//clear TX FIFO
+ 384:	88 e0       	ldi	r24, 0x08	; 8
+ 386:	60 e0       	ldi	r22, 0x00	; 0
+ 388:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+	atmegainit ();	//init pinova kontrolera
+	spiInit ();		// init SPI sucelja
+	RFM22init ();	//init RFM 22 modula
+
+	sei ();
+ 38c:	78 94       	sei
+	spiWrite (0x07,0x41);//enable READY mode and battery readout
+ 38e:	87 e0       	ldi	r24, 0x07	; 7
+ 390:	61 e4       	ldi	r22, 0x41	; 65
+ 392:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+while (1)
+{
+	flag=0;
+	scratch [0]=1;		//pisemo node ID = 1
+ 396:	01 e0       	ldi	r16, 0x01	; 1
+	i=spiRead (0x1B);	//read battery status
+	scratch [1]=i;		//zapisi batt. status u scratch
+	scratch[2]=0xAA;	//zapisi DAT1=AA
+ 398:	1a ea       	ldi	r17, 0xAA	; 170
+ 39a:	c8 eb       	ldi	r28, 0xB8	; 184
+ 39c:	d0 e0       	ldi	r29, 0x00	; 0
+	sei ();
+	spiWrite (0x07,0x41);//enable READY mode and battery readout
+
+while (1)
+{
+	flag=0;
+ 39e:	10 92 6f 00 	sts	0x006F, r1
+	scratch [0]=1;		//pisemo node ID = 1
+ 3a2:	00 93 60 00 	sts	0x0060, r16
+	i=spiRead (0x1B);	//read battery status
+ 3a6:	8b e1       	ldi	r24, 0x1B	; 27
+ 3a8:	0e 94 48 00 	call	0x90	; 0x90 <spiRead>
+	scratch [1]=i;		//zapisi batt. status u scratch
+ 3ac:	80 93 61 00 	sts	0x0061, r24
+	scratch[2]=0xAA;	//zapisi DAT1=AA
+ 3b0:	10 93 62 00 	sts	0x0062, r17
+	i=getDIPvalue();	//ocitaj vrijednost DIP switcha	
+ 3b4:	0e 94 65 00 	call	0xca	; 0xca <getDIPvalue>
+	scratch[3]=i;		//zapisi DAT2=vrijednost dip prekidaca
+ 3b8:	80 93 63 00 	sts	0x0063, r24
+	i=PINA;				//ocitaj PORTA
+ 3bc:	89 b3       	in	r24, 0x19	; 25
+	scratch[4]=i;		//zapisi DAT3=vrijednost PORTA
+ 3be:	80 93 64 00 	sts	0x0064, r24
+	
+	spiWriteBurst(0x7F,scratch,5);//na adresu 7F ide scratch, pisemo 5 bajtova
+ 3c2:	8f e7       	ldi	r24, 0x7F	; 127
+ 3c4:	60 e6       	ldi	r22, 0x60	; 96
+ 3c6:	70 e0       	ldi	r23, 0x00	; 0
+ 3c8:	45 e0       	ldi	r20, 0x05	; 5
+ 3ca:	0e 94 53 00 	call	0xa6	; 0xa6 <spiWriteBurst>
+	spiWrite (0x07,0x49);//pokrecemo TX uz battery readout enabled
+ 3ce:	87 e0       	ldi	r24, 0x07	; 7
+ 3d0:	69 e4       	ldi	r22, 0x49	; 73
+ 3d2:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+	
+	while (!flag);
+ 3d6:	80 91 6f 00 	lds	r24, 0x006F
+ 3da:	88 23       	and	r24, r24
+ 3dc:	e1 f3       	breq	.-8      	; 0x3d6 <main+0x252>
+	
+	spiWrite (0x08,0x01);//clear TX FIFO
+ 3de:	88 e0       	ldi	r24, 0x08	; 8
+ 3e0:	61 e0       	ldi	r22, 0x01	; 1
+ 3e2:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+	spiWrite (0x08,0x00);//clear TX FIFO
+ 3e6:	88 e0       	ldi	r24, 0x08	; 8
+ 3e8:	60 e0       	ldi	r22, 0x00	; 0
+ 3ea:	0e 94 3e 00 	call	0x7c	; 0x7c <spiWrite>
+
+	PORTB = PORTB & (~(1<< PB2));//pin PB2 low, zelena se pali
+ 3ee:	c2 98       	cbi	0x18, 2	; 24
+ 3f0:	88 eb       	ldi	r24, 0xB8	; 184
+ 3f2:	9b e0       	ldi	r25, 0x0B	; 11
+ 3f4:	fe 01       	movw	r30, r28
+ 3f6:	31 97       	sbiw	r30, 0x01	; 1
+ 3f8:	f1 f7       	brne	.-4      	; 0x3f6 <main+0x272>
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+ 3fa:	01 97       	sbiw	r24, 0x01	; 1
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+ 3fc:	d9 f7       	brne	.-10     	; 0x3f4 <main+0x270>
+	_delay_ms(300);				//pricekajmo 0.3 sek
+	PORTB = PORTB | (1<< PB2);	//pin PB2 high, zelena se gasi
+ 3fe:	c2 9a       	sbi	0x18, 2	; 24
+	i= getDIPvalue ();	//ocitamo postavku na DIP prekidacu
+ 400:	0e 94 65 00 	call	0xca	; 0xca <getDIPvalue>
+ 404:	09 c0       	rjmp	.+18     	; 0x418 <main+0x294>
+	//_delay_ms(2000);	
+	for(; i>0; i--)  _delay_ms(1000); //koliko  sekundi na prekidacu toliko puta delay 1000 ms 
+ 406:	20 e1       	ldi	r18, 0x10	; 16
+ 408:	37 e2       	ldi	r19, 0x27	; 39
+ 40a:	fe 01       	movw	r30, r28
+ 40c:	31 97       	sbiw	r30, 0x01	; 1
+ 40e:	f1 f7       	brne	.-4      	; 0x40c <main+0x288>
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+ 410:	21 50       	subi	r18, 0x01	; 1
+ 412:	30 40       	sbci	r19, 0x00	; 0
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+ 414:	d1 f7       	brne	.-12     	; 0x40a <main+0x286>
+ 416:	81 50       	subi	r24, 0x01	; 1
+ 418:	88 23       	and	r24, r24
+ 41a:	09 f4       	brne	.+2      	; 0x41e <main+0x29a>
+ 41c:	c0 cf       	rjmp	.-128    	; 0x39e <main+0x21a>
+ 41e:	f3 cf       	rjmp	.-26     	; 0x406 <main+0x282>
+
+00000420 <_exit>:
+ 420:	f8 94       	cli
+
+00000422 <__stop_program>:
+ 422:	ff cf       	rjmp	.-2      	; 0x422 <__stop_program>
